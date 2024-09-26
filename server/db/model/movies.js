@@ -10,9 +10,9 @@ const moviesSchema = new mongoose.Schema({
         type : String,
         required : true
     },
-    genre : {
-        type : String,
-        required : true
+    category : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "movies_categories"
     },
     language : {
         type : String,
