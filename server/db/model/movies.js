@@ -15,11 +15,11 @@ const moviesSchema = new mongoose.Schema({
         ref : "movies_categories"
     },
     language : {
-        type : String,
-        required : true
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "movies_languages"
     },
     duration : {
-        type : Number,
+        type : String,
         required : true
     },
     release_date : {

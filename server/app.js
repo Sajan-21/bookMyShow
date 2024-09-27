@@ -10,7 +10,7 @@ const mongoConnect = require('./db/connect');
 mongoConnect();
 
 app.use(express.static('../client'));
-app.use(express.json());
+app.use(express.json({limit : "1024mb"}));
 app.use(express.urlencoded({extended : true}));
 app.use(router);
 

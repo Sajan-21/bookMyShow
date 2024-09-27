@@ -8,6 +8,8 @@ router.get('/movies',controller.getAllMovies);
 router.get('/movie/:id',controller.getMovie);
 router.put('/movie/:id',controller.updateMovie);
 router.delete('/movie/:id',controller.deleteMovie);
-router.get('/categorized/:category',controller.categorizedMovies);
+router.get('/categorized',controller.categorizedMovies);
+router.get('/categories',controller.getCategories);
+router.get('/languages',controller.getLanguages);
 
 module.exports = router;

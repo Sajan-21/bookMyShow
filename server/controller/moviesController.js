@@ -1,6 +1,8 @@
 const movies = require('../db/model/movies');
 const movies_categories = require('../db/model/movie_categories');
 const { success_function, error_function } = require('../utils/responseHandler');
+const movies_languages = require('../db/model/movies_language');
+const { fileUpload } = require('../utils/fileUpload');
 
 exports.addMovie = async function(req, res) {
 
@@ -17,6 +19,27 @@ exports.addMovie = async function(req, res) {
         category = category_collection._id;
         console.log("category : ",category);
         body.category = category;
+
+        let language = body.language;
+        console.log("language : ",language);
+
+        let language_collection = await movies_languages.findOne({language});
+        console.log("language_collection : ",language_collection);
+
+        language = language_collection._id;
+        console.log("language : ",language);
+        body.language = language;
+
+        if(body.image) {
+
+            let image = body.image;
+
+            let img_path = await fileUpload(image,"movie");
+            console.log("img_path : ",img_path);
+
+            body.image = img_path;
+
+        }
 
         await movies.create(body);
 
@@ -50,7 +73,7 @@ exports.getAllMovies = async function(req, res) {
 
     try {
 
-        let movieDatas = await movies.find().populate("category");
+        let movieDatas = await movies.find().populate("category").populate("language");
 
         let response = success_function({
             statusCode : 200,
@@ -83,7 +106,7 @@ exports.getMovie = async function(req, res) {
     try {
 
         let id = req.params.id;
-        let movieData = await movies.findOne({_id : id});
+        let movieData = await movies.findOne({_id : id}).populate("category").populate("language");
 
         let response = success_function({
             statusCode : 200,
@@ -117,7 +140,43 @@ exports.updateMovie = async function(req, res) {
 
         let id = req.params.id;
         let body = req.body;
-        await movies.updateOne({_id : id},{$set : body});
+
+        let category = body.category;
+        console.log("category : ",category);
+
+        let category_collection = await movies_categories.findOne({category});
+        console.log("category_collection : ",category_collection);
+
+        category = category_collection._id;
+        console.log("category : ",category);
+        body.category = category;
+
+        let language = body.language;
+        console.log("language : ",language);
+
+        let language_collection = await movies_languages.findOne({language});
+        console.log("language_collection : ",language_collection);
+
+        language = language_collection._id;
+        console.log("language : ",language);
+        body.language = language;
+
+        let image = body.image;
+
+        const regexp = /^data/ ; 
+        const result = regexp.test(image); // check if str2 starts with 'rat'
+        console.log("result : ",result) ; //true
+
+        if(result === true) {
+
+            let img_path = await fileUpload(image,"movie");
+            console.log("img_path : ",img_path);
+
+            body.image = img_path;
+
+        }
+
+        await movies.updateOne({_id : id},{$set : body}).populate("category").populate("language");
 
         let response = success_function({
             statusCode : 200,
@@ -182,25 +241,93 @@ exports.categorizedMovies = async function(req, res) {
 
     try {
 
-        let category = req.params.category;
-        console.log("category : ",category);
+        let query = req.query;
+        console.log("query : ",query);
 
-        let category_collection = await movies_categories.findOne({category});
-        console.log("category_collection : ",category_collection);
+        if(query.category){
 
-        let category_id = category_collection._id;
-        console.log("category_id : ",category_id);
+            try {
 
-        let categorized = await movies.find({category : category_id}).populate("category");
+                let category = query.category;
 
-        let response = success_function({
-            statusCode : 200,
-            data : categorized
-        });
+                let category_collection = await movies_categories.findOne({category});
+                let category_id = category_collection._id;
 
-        res.status(response.statusCode).send(response);
+                let categorized = await movies.find({category : category_id}).populate("category");
 
-        return ;
+                let response = success_function({
+                    statusCode : 200,
+                    data : categorized
+                });
+
+                res.status(response.statusCode).send(response);
+
+                return ;
+                
+            } catch (error) {
+
+                console.log("error : ",error);
+                
+            }
+
+        }else if(query.category && query.language){
+
+            try {
+
+                let category = query.category;
+
+                let category_collection = await movies_categories.findOne({category});
+                let category_id = category_collection._id;
+
+                let language = query.language;
+
+                let language_collection = await movies_languages.findOne({language});
+                let language_id = language_collection._id;
+
+                let categorized = await movies.find({category : category_id} && {language : language_id}).populate("category").populate("language");
+
+                let response = success_function({
+                    statusCode : 200,
+                    data : categorized
+                });
+
+                res.status(response.statusCode).send(response);
+
+                return ;
+                
+            } catch (error) {
+
+                console.log("error : ",error);
+                
+            }
+
+        }else{
+
+            try {
+
+                let language = query.language;
+
+                let language_collection = await movies_languages.findOne({language});
+                let language_id = language_collection._id;
+
+                let categorized = await movies.find({language : language_id}).populate("language");
+
+                let response = success_function({
+                    statusCode : 200,
+                    data : categorized
+                });
+
+                res.status(response.statusCode).send(response);
+
+                return ;
+                
+            } catch (error) {
+
+                console.log("error : ",error);
+                
+            }
+
+        }
         
     } catch (error) {
 
@@ -209,6 +336,72 @@ exports.categorizedMovies = async function(req, res) {
         let response = error_function({
             statusCode : 400,
             message : "getting categorized movies failed"
+        });
+
+        res.status(response.statusCode).send(response);
+
+        return ;
+        
+    }
+
+}
+
+exports.getCategories = async function(req, res) {
+
+    try {
+
+        let db_response = await movies_categories.find();
+        console.log("db_response : ",db_response);
+
+        let response = success_function({
+            statusCode : 200,
+            message : "Category fetching successful",
+            data : db_response
+        });
+
+        res.status(response.statusCode).send(response);
+        return ;
+        
+    } catch (error) {
+
+        console.log("error : ",error);
+
+        let response = error_function({
+            statusCode : 400,
+            message : "fetching category failed"
+        });
+
+        res.status(response.statusCode).send(response);
+
+        return ;
+        
+    }
+
+}
+
+exports.getLanguages = async function(req, res) {
+
+    try {
+
+        let db_response = await movies_languages.find();
+        console.log("db_response : ",db_response);
+
+        let response = success_function({
+            statusCode : 200,
+            message : "language fetching successful",
+            data : db_response
+        });
+
+        res.status(response.statusCode).send(response);
+        return ;
+        
+    } catch (error) {
+
+        console.log("error : ",error);
+
+        let response = error_function({
+            statusCode : 400,
+            message : "fetching language failed"
         });
 
         res.status(response.statusCode).send(response);
