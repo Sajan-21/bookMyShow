@@ -7,9 +7,17 @@
 }
 
 .bg-dg{
-    background-color: rgb(228, 190, 190);
+    background-color: rgb(225, 203, 203);
 }
 
 .text-dg{
     color: red;
+}
+
+.opacity{
+    opacity: .5;
+}
+
+.width-img{
+    width: 10%;
 }

@@ -244,7 +244,7 @@ exports.categorizedMovies = async function(req, res) {
         let query = req.query;
         console.log("query : ",query);
 
-        if(query.category){
+        if(query.category !== "category" && query.language === "language"){
 
             try {
 
@@ -277,18 +277,29 @@ exports.categorizedMovies = async function(req, res) {
                 let category = query.category;
 
                 let category_collection = await movies_categories.findOne({category});
+                console.log("category_collection : ",category_collection);
                 let category_id = category_collection._id;
 
                 let language = query.language;
 
-                let language_collection = await movies_languages.findOne({language});
-                let language_id = language_collection._id;
+                // let language_collection = await movies_languages.findOne({language});
+                // console.log("language_collection : ",language_collection);
+                // let language_id = language_collection._id;
 
-                let categorized = await movies.find({category : category_id} && {language : language_id}).populate("category").populate("language");
+                let categorized = await movies.find({category : category_id}).populate('category').populate('language');
+                console.log("categorized : ",categorized);
+
+                let filtered = '';
+
+                for(let i=0; i<categorized.length; i++) {
+                    if(categorized[i].language.language === query.language){
+                        filtered = filtered + categorized[i];
+                    }
+                }
 
                 let response = success_function({
                     statusCode : 200,
-                    data : categorized
+                    data : filtered
                 });
 
                 res.status(response.statusCode).send(response);
@@ -301,7 +312,7 @@ exports.categorizedMovies = async function(req, res) {
                 
             }
 
-        }else{
+        }else if(query.category === "category" && query.language !== "language"){
 
             try {
 
@@ -327,6 +338,8 @@ exports.categorizedMovies = async function(req, res) {
                 
             }
 
+        }else {
+            console.log("nothing to show");
         }
         
     } catch (error) {

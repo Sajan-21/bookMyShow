@@ -19,7 +19,7 @@
         <link rel="stylesheet" href="admin.css">
     </head>
 
-    <body  onload="getSelectBox()">
+    <body  onload="mongoDB()">
         <header>
             <nav class="">
                 <div class="container p-3 d-flex justify-content-between align-items-center">
@@ -38,24 +38,24 @@
         <main class="bg-dg">
 
             <div class="container p-5">
-                <button class="btn border border-danger text-dark">+ add Movie</button>
+                <button class="btn border border-danger text-dark" onclick="getSelectBox()">+ add Movie</button>
             </div>
 
             <div id="addForm">
                 <div class="container bg-light p-5 rounded w-50">
                     <div class="container d-flex justify-content-end">
-                        <button class="btn border border-danger rounded-circle">X</button>
+                        <button class="btn border border-danger rounded-circle" onclick="exitForm()">X</button>
                     </div>
     
                     <div class="d-flex flex-column align-items-center">
 
                         <p class="fs-3 text-dg fw-bolder">ADD BOOK DATA HERE</p>
                         
-                        <form onsubmit="addMovie(event)" class="d-flex flex-column justify-content-center align-items-center gap-3 w-100">
+                        <form onsubmit="imageConvertion(event)" class="d-flex flex-column justify-content-center align-items-center gap-3 w-100">
                             <input type="text" name="title" id="title" placeholder="name" class="w-75 rounded-pill p-2 px-3">
                             <div class="d-flex border border-dark rounded-pill p-2 px-3 w-75">
                                 <label for="file" class="text-start">upload image</label>
-                                <input type="file" id="image" name="image" accept="image/*" class="w-50" placeholder="image">                                
+                                <input type="file" id="image">
                             </div>
                             <select name="category" id="category" class="w-75 rounded-pill p-2 px-3 border-dark">
                                 <option selected="category">category</option>

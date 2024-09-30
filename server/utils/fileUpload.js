@@ -23,7 +23,7 @@ exports.fileUpload = async function(file,directory) {
                 console.log("uploadPath : ",uploadPath);
 
                 let base64 = file.split(';base64,')[1];
-                console.log("base64 : ",base64);
+                // console.log("base64 : ",base64);
 
                 fs.mkdir(uploadPath,{recursive : true},(error) => {
 

@@ -19,7 +19,7 @@
         <link rel="stylesheet" href="style.css">
     </head>
 
-    <body class="bg-light">
+    <body class="bg-light" onload="getAllMovies()">
         <header>
 
             <nav class="bg-whiteColor">
@@ -33,15 +33,15 @@
                         </div>
                     </div>
                     <div class="col d-flex justify-content-end">
-                        <button class="border rounded bg-danger text-light px-3 py-2" onclick="adminPage()">Admin</button>
+                        <a href="./admin.html"><button class="border rounded bg-danger text-light px-3 py-2">Admin</button></a>
                     </div>
                 </div>
             </nav>
             <div>
                 <div class="container">
                     <ul class="list-inline d-flex align-items-center gap-4 p-2">
-                        <a href="" class="text-decoration-none"><li class="list-inline-items text-dark">Movies</li></a>
-                        <a href="" class="text-decoration-none"><li class="list-inline-items text-dark">Stream</li></a>
+                        <a href="./index.html" class="text-decoration-none"><li class="list-inline-items text-dark">Movies</li></a>
+                        <a href="./filter.html" class="text-decoration-none"><li class="list-inline-items text-dark">filter</li></a>
                         <a href="" class="text-decoration-none"><li class="list-inline-items text-dark">Event</li></a>
                         <a href="" class="text-decoration-none"><li class="list-inline-items text-dark">Sports</li></a>
                         <a href="" class="text-decoration-none"><li class="list-inline-items text-dark">Activity</li></a>
@@ -55,8 +55,10 @@
         </header>
         <main>
 
-            <div id="">
+            <div id="allMovies">
+                <div id="showAllMovies" class="show-all-movies p-5">
 
+                </div>
             </div>
 
         </main>
