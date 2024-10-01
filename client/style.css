@@ -6,20 +6,22 @@
     background-color: white;
 }
 
+.container-custom{
+    width: 80%;
+    margin: auto;
+}
+
 .show-all-movies{
     display: grid;
     grid-template-columns: auto auto auto auto auto;
     justify-content: space-between;
     row-gap: 5%;
-    /* column-gap: 2%; */
-    width: 90%;
-    margin: auto;
 }
 
 .box-width{
-    width: 12vw;
+    width: 15vw;
 }
 
 .all-covers{
-    height: 35vh;
+    height: 45vh;
 }

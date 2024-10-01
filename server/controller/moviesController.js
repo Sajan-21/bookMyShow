@@ -8,7 +8,7 @@ const fileDelete = require('../utils/fileDelete').fileDelete;
 exports.addMovie = async function(req, res) {
 
     try {
-
+        console.log("req.body : ",req.body);
         let body = req.body;
 
         let category = body.category;
@@ -34,6 +34,7 @@ exports.addMovie = async function(req, res) {
         if(body.image) {
 
             let image = body.image;
+            console.log("image : ",image);
 
             let img_path = await fileUpload(image,"movie");
             console.log("img_path : ",img_path);
@@ -41,6 +42,20 @@ exports.addMovie = async function(req, res) {
             body.image = img_path;
 
         }
+
+        if(body.bgImg){
+
+            let bgImg = body.bgImg;
+            console.log("bgImg : ",bgImg);
+
+            let bgImg_path = await fileUpload(bgImg,"movie");
+            console.log("bgImg_path : ",bgImg_path);
+
+            body.bgImg = bgImg_path;
+
+        }
+
+        console.log("body : ",body);
 
         await movies.create(body);
 
@@ -176,11 +191,30 @@ exports.updateMovie = async function(req, res) {
 
         }
 
+        let bgSplittedImage;
+
+        if(body.bgImg) {
+
+            let bgImagePath = await movies.findOne({_id : id});
+            splittedImage = bgImagePath.image.split('/')[2];
+
+            let bgImg_path = await fileUpload(bgImage,"movie");
+            console.log("bgImg_path : ",bgImg_path);
+
+            body.bgImage = bgImg_path;
+
+        }
+
         await movies.updateOne({_id : id},{$set : body}).populate("category").populate("language");
 
         if(body.image){
             const imagePath = path.join('./uploads', 'movie', splittedImage);
             fileDelete(imagePath);
+        }
+
+        if(body.bgImg){
+            const bgImagePath = path.join('./uploads', 'movie', bgSplittedImage);
+            fileDelete(bgImagePath);
         }
 
         let response = success_function({
@@ -248,31 +282,34 @@ exports.categorizedMovies = async function(req, res) {
 
     if(req.query.category){
 
-        let category = req.query.category;
-        console.log("category : ",category);
+        let query_category = req.query.category;
+        console.log("query_category : ",query_category);
 
-        let category_collection = await movies_categories.findOne({category : category});
-        let category_id = category_collection._id;
+        let category_collection = await movies_categories.findOne({category : query_category});
+        let category = category_collection._id;
 
-        filterArr.push({category_id});
+        filterArr.push({category});
 
     }
 
     if(req.query.language){
 
-        let language = req.query.language;
-        console.log("language : ",language);
+        let query_language = req.query.language;
+        console.log("query_language : ",query_language);
 
-        let language_collection = await movies_languages.findOne({language : language});
-        let language_id = language_collection._id;
+        let language_collection = await movies_languages.findOne({language : query_language});
+        let language = language_collection._id;
 
-        filterArr.push({language_id});
+        filterArr.push({language});
 
     }
+
+    console.log("filterArr : ",filterArr);
 
     try {
 
         let movie_data = await movies.find(filterArr.length > 0 ? {$and : filterArr} : {}).populate("category").populate("language");
+        console.log("movie_data : ",movie_data);
 
         let response = success_function({
             statusCode : 200,

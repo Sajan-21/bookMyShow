@@ -5,3 +5,23 @@
 .bg-whiteColor{
     background-color: white;
 }
+
+.container-custom{
+    width: 80%;
+    margin: auto;
+}
+
+.show-all-movies{
+    display: grid;
+    grid-template-columns: auto auto auto auto auto;
+    justify-content: space-between;
+    row-gap: 5%;
+}
+
+.box-width{
+    width: 15vw;
+}
+
+.all-covers{
+    height: 45vh;
+}

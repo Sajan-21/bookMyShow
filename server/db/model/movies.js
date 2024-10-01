@@ -6,10 +6,8 @@ const moviesSchema = new mongoose.Schema({
         type : String,
         required : true
     },
-    image : {
-        type : String,
-        required : true
-    },
+    image : "String",
+    bgImg : "String",
     category : {
         type : mongoose.Schema.Types.ObjectId,
         ref : "movies_categories"
