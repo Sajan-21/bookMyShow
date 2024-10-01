@@ -3,6 +3,7 @@ const movies_categories = require('../db/model/movie_categories');
 const { success_function, error_function } = require('../utils/responseHandler');
 const movies_languages = require('../db/model/movies_language');
 const { fileUpload } = require('../utils/fileUpload');
+const fileDelete = require('../utils/fileDelete').fileDelete;
 
 exports.addMovie = async function(req, res) {
 
@@ -161,13 +162,12 @@ exports.updateMovie = async function(req, res) {
         console.log("language : ",language);
         body.language = language;
 
-        let image = body.image;
+        let splittedImage;
 
-        // const regexp = /^data/ ; 
-        // const result = regexp.test(image); // check if str2 starts with 'rat'
-        // console.log("result : ",result) ; //true
+        if(body.image) {
 
-        if(result === true) {
+            let imagePath = await movies.findOne({_id : id});
+            splittedImage = imagePath.image.split('/')[2];
 
             let img_path = await fileUpload(image,"movie");
             console.log("img_path : ",img_path);
@@ -177,6 +177,11 @@ exports.updateMovie = async function(req, res) {
         }
 
         await movies.updateOne({_id : id},{$set : body}).populate("category").populate("language");
+
+        if(body.image){
+            const imagePath = path.join('./uploads', 'movie', splittedImage);
+            fileDelete(imagePath);
+        }
 
         let response = success_function({
             statusCode : 200,
